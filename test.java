@@ -18,7 +18,6 @@ public class test{
 	*
 	*	@param fileNames will hold the file names
 	*	@param command will be the string we check
-<<<<<<< HEAD
 	*	@return the corresponding FileType object
 	*/
 	static FileType assignFile(Set<String> fileNames, String compiler)
@@ -33,66 +32,30 @@ public class test{
 		supportedTypes.put("python", python);
 		supportedTypes.put("python3", python);
 
-		if(fileNames.containsKey(compiler))
-			retun supportedTypes(compiler);
+		if(supportedTypes.containsKey(compiler))
+			return supportedTypes.get(compiler);
 
 		return invalidFile;
-=======
-	*	@returb the corresponding FileType object
-	*/
-	static FileType assignFile(Set<String> fileNames, List<String> command)
-	{
-		//A mapping of the format <file extension, FileType object>
-		Map<String, FileType> supportedTypes = new HashMap<String, FileType>();
-		supportedTypes.put(".java", java);
-		supportedTypes.put(".cpp", cpp);
-		supportedTypes.put(".h", cpp);
-		supportedTypes.put(".c", c);
-		supportedTypes.put(".cs", cs);
-		supportedTypes.put(".py", python);
-
-		FileType file= invalidFile;
-
-		for(String arg: command)
-			for(String type: supportedTypes.keySet())
-				if(arg.contains(type))
-				{
-					fileNames.add(arg);
-					file = supportedTypes.get(type);
-				}
-
-		return file;
->>>>>>> fd7715e9dba56ff512315539b60b4e00dadf84be
 	}
 
 	public static void main(String[] args) throws Exception
 	{
-		//take in the compile command for our desired file  as input
-		Scanner readCommand = new Scanner(System.in);
-		String[] tempCommands = readCommand.nextLine().split("[ ]");
-
-		//parse the line into a List
+		//get the compile statement from arguments
 		List<String> commands = new ArrayList<String>();
-		for(int i=0; i<tempCommands.length; i++)
-			commands.add(tempCommands[i]);
+		for(int i=0; i<args.length; i++)
+			commands.add(args[i]);
 
 		//will contain the File names
 		Set<String> fileNames= new HashSet<String>();
 
-<<<<<<< HEAD
+
 		/*	Find out what type of file(s) is being compiled by checking the compiler used
-=======
-		/*	Find out what type of file(s) is being compiled,
->>>>>>> fd7715e9dba56ff512315539b60b4e00dadf84be
 			if it is a supported type we will add it to fileNames
 			Otherwise we leave it empty and print that the file type is not currently
 			supported
 		*/
-<<<<<<< HEAD
-		FileType file = assignFile(fileNames, commands[0]);
-=======
-		FileType file = assignFile(fileNames, commands);
->>>>>>> fd7715e9dba56ff512315539b60b4e00dadf84be
+
+		FileType file = assignFile(fileNames, commands.get(0));
 
 		if(file == invalidFile)
 			System.out.println("Not supported file type");
@@ -121,11 +84,8 @@ public class test{
 
 		in.close();
 
-<<<<<<< HEAD
 		file.parseOutput(output.toString(), fileNames);
 
-=======
->>>>>>> fd7715e9dba56ff512315539b60b4e00dadf84be
 		System.exit(0);
 
 	}
@@ -213,7 +173,6 @@ class PythonFile extends FileType{
 		super();
 	}
 
-<<<<<<< HEAD
 	public void parseOutput(String output, Set<String> fileNames){
 		
 	}
@@ -223,8 +182,6 @@ class PythonFile extends FileType{
 	}
 }
 
-=======
->>>>>>> fd7715e9dba56ff512315539b60b4e00dadf84be
 class InvalidFile extends FileType{
 	public InvalidFile(){
 		super();
