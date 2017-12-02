@@ -21,10 +21,12 @@ public class SolutionFinder{
         for(int i = 0; i < links.size(); ++i){
             
         }
+
+        return null;
     }
 
     //Save a list of webpages into base file
-    void savePagesToFile(String file, String[]){
+    void savePagesToFile(String file){
         
     }
 }
