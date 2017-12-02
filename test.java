@@ -9,54 +9,33 @@ public class test{
 	static CppFile cpp = new CppFile();
 	static CFile c = new CFile();
 	static CsFile cs = new CsFile();
-	static GoFile go = new GoFile();
 	static PythonFile python = new PythonFile();
 	static InvalidFile invalidFile = new InvalidFile();
-
-	/**
-	*	@param fileType is the type of file we will try to return
-	*	@return the corresponding filetype if it is valid, else an invalidFile 
-	*/
-	static FileType assignFile(String fileType)
-	{
-		Map<String, FileType> types = new HashMap<String, FileType>();
-		types.put(".java", java);
-		types.put(".cpp", cpp);
-		types.put(".c", c);
-		types.put(".cs", cs);
-		types.put(".go", go);
-		types.put(".py", python);
-		types.put("", invalidFile);
-
-		return types.get(fileType);
-	}
 
 	/**
 	*	See if the string argument lets us know the type of file we are compiling
 	*	and assign it in the case that we find it
 	*
-	*	@param fileType will hold the proper fileType
+	*	@param fileNames will hold the file names
 	*	@param command will be the string we check
+	*	@return the corresponding FileType object
 	*/
-	static boolean containsFileType(String fileType, String command)
+	static FileType assignFile(Set<String> fileNames, String compiler)
 	{
 		//A mapping of the format <file extension, FileType object>
-		Set<String> supportedTypes = new HashSet<String>();
-		supportedTypes.add(".java");
-		supportedTypes.add(".cpp");
-		supportedTypes.add(".c");
-		supportedTypes.add(".cs");
-		supportedTypes.add(".go");
-		supportedTypes.add(".py");
+		Map<String, FileType> supportedTypes = new HashMap<String, FileType>();
+		supportedTypes.put("javac", java);
+		supportedTypes.put("g++", cpp);
+		supportedTypes.put("gcc", cpp);
+		supportedTypes.put("clang", cpp);
+		supportedTypes.put(".cs", cs);
+		supportedTypes.put("python", python);
+		supportedTypes.put("python3", python);
 
-		for(String s: supportedTypes)
-			if(command.contains(s))
-			{
-				fileType = s;
-				return true;
-			}
+		if(fileNames.containsKey(compiler))
+			retun supportedTypes(compiler);
 
-		return false;
+		return invalidFile;
 	}
 
 	public static void main(String[] args) throws Exception
@@ -68,30 +47,21 @@ public class test{
 		//parse the line into a List
 		List<String> commands = new ArrayList<String>();
 		for(int i=0; i<tempCommands.length; i++)
-			commands.add(commands.get(i));
+			commands.add(tempCommands[i]);
 
-		//will contain the File type
-		String fileType="";
-		FileType file;
+		//will contain the File names
+		Set<String> fileNames= new HashSet<String>();
 
-		/*	Find out what type of file is being compiled,
-			if it is a supported type we will assign it to the string fileType
+		/*	Find out what type of file(s) is being compiled by checking the compiler used
+			if it is a supported type we will add it to fileNames
 			Otherwise we leave it empty and print that the file type is not currently
 			supported
 		*/
-		for(int i=0; i<commands.size(); i++)
-		{
-			if(containsFileType(fileType, commands.get(i)))
-			{
-				file = assignFile(fileType);
-				break;
-			}
+		FileType file = assignFile(fileNames, commands[0]);
 
-			if(i==commands.size()-1)
-			{
-				System.out.println("Not supported file type");
-			}
-		}
+		if(file == invalidFile)
+			System.out.println("Not supported file type");
+
 
 		//compile the program
 		ProcessBuilder ps=new ProcessBuilder(commands);
@@ -116,27 +86,40 @@ public class test{
 
 		in.close();
 
-		
+		file.parseOutput(output.toString(), fileNames);
 
 		System.exit(0);
+
 	}
 }
 
 abstract class FileType{
 	List<String> errors;
-	List<String> warnings;
 
-	public abstract void addError(String message);
-	public abstract void addWarning(String message);
+	public FileType(){
+		errors = new ArrayList<String>();
+	}
+	
+	//helper function for parseOutput
+	private void addError(String message){
+		errors.add(message);
+	}
+
+	/**
+	*	@param output is the terminal output we will parse
+	*	@param fileNames contains all the filenames
+	*	@effects Will read in the terminal output and accordingly place them into errors
+	*/
+	public abstract void parseOutput(String output, Set<String> fileNames);
 	public abstract void searchErrors();
 }
 
 class CppFile extends FileType{
-	public void addError(String message){
-
+	public CppFile(){
+		super();
 	}
 
-	public void addWarning(String message){
+	public void parseOutput(String output, Set<String> fileNames){
 
 	}
 
@@ -146,12 +129,12 @@ class CppFile extends FileType{
 }
 
 class CFile extends FileType{
-	public void addError(String message){
-		
+	public CFile(){
+		super();
 	}
 
-	public void addWarning(String message){
-
+	public void parseOutput(String output, Set<String> fileNames){
+		
 	}
 
 	public void searchErrors(){
@@ -160,12 +143,12 @@ class CFile extends FileType{
 }
 
 class CsFile extends FileType{
-	public void addError(String message){
-		
+	public CsFile(){
+		super();
 	}
 
-	public void addWarning(String message){
-
+	public void parseOutput(String output, Set<String> fileNames){
+		
 	}
 
 	public void searchErrors(){
@@ -174,12 +157,12 @@ class CsFile extends FileType{
 }
 
 class JavaFile extends FileType{
-	public void addError(String message){
-		
+	public JavaFile(){
+		super();
 	}
 
-	public void addWarning(String message){
-
+	public void parseOutput(String output, Set<String> fileNames){
+		
 	}
 
 	public void searchErrors(){
@@ -188,26 +171,12 @@ class JavaFile extends FileType{
 }
 
 class PythonFile extends FileType{
-	public void addError(String message){
+	public PythonFile(){
+		super();
+	}
+
+	public void parseOutput(String output, Set<String> fileNames){
 		
-	}
-
-	public void addWarning(String message){
-
-	}
-
-	public void searchErrors(){
-		
-	}
-}
-
-class GoFile extends FileType{
-	public void addError(String message){
-		
-	}
-
-	public void addWarning(String message){
-
 	}
 
 	public void searchErrors(){
@@ -216,12 +185,12 @@ class GoFile extends FileType{
 }
 
 class InvalidFile extends FileType{
-	public void addError(String message){
-		
+	public InvalidFile(){
+		super();
 	}
 
-	public void addWarning(String message){
-
+	public void parseOutput(String output, Set<String> fileNames){
+		
 	}
 
 	public void searchErrors(){
