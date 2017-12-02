@@ -34,11 +34,28 @@ public class SolutionFinder{
     }
 }
 
-//Class used to google search results and then store the links
+//Class used to search on StackOverflow and then store the links
 public class LinkQuery{
     
     //Socket used to write a search query and then get results
     Socket socket;
-
     
+    //string representation of the HTTP request
+    String httpRequest;
+
+    //string representation of the link to request
+    String url;
+
+    //the key for this application
+    String key;
+
+    //Default constructor
+    public LinkQuery(){
+        httpRequest = "";
+        url = "";
+    }
+    
+    void composeUrl(String searchElement){
+        url += searchElement;
+    }
 }
