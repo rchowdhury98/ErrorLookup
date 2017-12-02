@@ -7,8 +7,6 @@ public class test{
 	//use globals for now, will replace later!!
 	static JavaFile java = new JavaFile();
 	static CppFile cpp = new CppFile();
-	static CFile c = new CFile();
-	static CsFile cs = new CsFile();
 	static PythonFile python = new PythonFile();
 	static InvalidFile invalidFile = new InvalidFile();
 
@@ -28,7 +26,6 @@ public class test{
 		supportedTypes.put("g++", cpp);
 		supportedTypes.put("gcc", cpp);
 		supportedTypes.put("clang", cpp);
-		supportedTypes.put("csc", cs);
 		supportedTypes.put("python", python);
 		supportedTypes.put("python3", python);
 
@@ -78,13 +75,19 @@ public class test{
 		while ((line = in.readLine()) != null) {
 		    System.out.println(line);
 		    output.append(line);
+		    output.append("\n");
 		}
 		pr.waitFor();
-		System.out.println("compilation complete!");
+
+		if (output.toString().isEmpty())
+			System.out.println("compilation complete!");
+		else
+			System.out.println("compilation errors!");
 
 		in.close();
 
-		file.parseOutput(output.toString(), fileNames);
+		file.parseOutput(output.toString());
+		file.printErrors();
 
 		System.exit(0);
 
@@ -99,8 +102,19 @@ abstract class FileType{
 	}
 	
 	//helper function for parseOutput
-	private void addError(String message){
+	protected void addError(String message){
 		errors.add(message);
+	}
+
+	//helper function for JavaFile.parseOutput
+	protected void removeLastError(){
+		errors.remove(errors.size()-1);
+	}
+
+	//tester method
+	public void printErrors(){
+		for(String s: errors)
+			System.out.println(s);
 	}
 
 	/**
@@ -108,7 +122,7 @@ abstract class FileType{
 	*	@param fileNames contains all the filenames
 	*	@effects Will read in the terminal output and accordingly place them into errors
 	*/
-	public abstract void parseOutput(String output, Set<String> fileNames);
+	public abstract void parseOutput(String output);
 	public abstract void searchErrors();
 }
 
@@ -117,36 +131,25 @@ class CppFile extends FileType{
 		super();
 	}
 
-	public void parseOutput(String output, Set<String> fileNames){
+	/**
+	*
+	*	@param output is what we have left of the terminal output to search through
+	*/
+	public void parseOutput(String output){
+		int substrStart = output.indexOf("error");
 
-	}
+		while(substrStart>=0)
+		{
+			int substrEnd = output.substring(substrStart).indexOf("\n") + substrStart;
 
-	public void searchErrors(){
-		
-	}
-}
+			if(substrEnd<0)
+				substrEnd = output.length()-1;
 
-class CFile extends FileType{
-	public CFile(){
-		super();
-	}
+			addError(output.substring(substrStart,substrEnd));
+			output = output.substring(substrEnd);
 
-	public void parseOutput(String output, Set<String> fileNames){
-		
-	}
-
-	public void searchErrors(){
-		
-	}
-}
-
-class CsFile extends FileType{
-	public CsFile(){
-		super();
-	}
-
-	public void parseOutput(String output, Set<String> fileNames){
-		
+			substrStart = output.indexOf("error");
+		}
 	}
 
 	public void searchErrors(){
@@ -159,8 +162,28 @@ class JavaFile extends FileType{
 		super();
 	}
 
-	public void parseOutput(String output, Set<String> fileNames){
-		
+	/**
+	*
+	*	@param output is what we have left of the terminal output to search through
+	*/
+	public void parseOutput(String output){
+		int substrStart = output.indexOf("error");
+
+		while(substrStart>=0)
+		{
+			int substrEnd = output.substring(substrStart).indexOf("\n") + substrStart;
+
+			if(substrEnd<0)
+				substrEnd = output.length()-1;
+
+			addError(output.substring(substrStart,substrEnd));
+			output = output.substring(substrEnd);
+
+			substrStart = output.indexOf("error");
+		}
+
+		//remove last error statement since it is just an error count
+		removeLastError();
 	}
 
 	public void searchErrors(){
@@ -173,7 +196,7 @@ class PythonFile extends FileType{
 		super();
 	}
 
-	public void parseOutput(String output, Set<String> fileNames){
+	public void parseOutput(String output){
 		
 	}
 
@@ -187,7 +210,7 @@ class InvalidFile extends FileType{
 		super();
 	}
 
-	public void parseOutput(String output, Set<String> fileNames){
+	public void parseOutput(String output){
 		
 	}
 
