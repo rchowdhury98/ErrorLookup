@@ -7,8 +7,13 @@ import java.net.*;
 //This would use a search engine, most likely Google, to find the links.
 //--we could try this link: https://developers.google.com/custom-search/json-api/v1/overview
 public class SolutionFinder{
-    //Need a socket to connect to the internet
-    Socket socket;
+    
+    
+
+    //Default contructor
+    public SolutionFinder(){
+        links = new ArrayList<URL>();
+    }
 
     //A list of all of the links to various websites
     List<URL> links;
@@ -29,4 +34,9 @@ public class SolutionFinder{
     void savePagesToFile(String file){
         
     }
+}
+
+//Class used to google search results and then store the links
+public class LinkQuery{
+    
 }
