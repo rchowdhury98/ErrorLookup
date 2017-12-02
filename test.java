@@ -28,7 +28,7 @@ public class test{
 		supportedTypes.put("g++", cpp);
 		supportedTypes.put("gcc", cpp);
 		supportedTypes.put("clang", cpp);
-		supportedTypes.put(".cs", cs);
+		supportedTypes.put("csc", cs);
 		supportedTypes.put("python", python);
 		supportedTypes.put("python3", python);
 
