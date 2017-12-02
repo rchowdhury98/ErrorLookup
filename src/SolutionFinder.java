@@ -46,15 +46,22 @@ public class LinkQuery{
     //string representation of the link to request
     String url;
 
-    //the key for this application
-    String key;
+    //the key for this application and cx is the custom search engine
+    //created by user
+    String key, cx;
 
     //Default constructor
     public LinkQuery(){
         httpRequest = "";
-        url = "";
+        url = "https://www.googleapis.com/customsearch/v1?key=";
     }
     
+    //Grab API key from file. Use file readers
+    void readKey(String file){
+        key = "";
+
+    }
+
     void composeUrl(String searchElement){
         url += searchElement;
     }
