@@ -7,8 +7,6 @@ import java.net.*;
 //This would use a search engine, most likely Google, to find the links.
 //--we could try this link: https://developers.google.com/custom-search/json-api/v1/overview
 public class SolutionFinder{
-    
-    
 
     //Default contructor
     public SolutionFinder(){
@@ -38,5 +36,9 @@ public class SolutionFinder{
 
 //Class used to google search results and then store the links
 public class LinkQuery{
+    
+    //Socket used to write a search query and then get results
+    Socket socket;
+
     
 }
