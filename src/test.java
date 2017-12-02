@@ -18,6 +18,26 @@ public class test{
 	*
 	*	@param fileNames will hold the file names
 	*	@param command will be the string we check
+<<<<<<< HEAD
+	*	@return the corresponding FileType object
+	*/
+	static FileType assignFile(Set<String> fileNames, String compiler)
+	{
+		//A mapping of the format <file extension, FileType object>
+		Map<String, FileType> supportedTypes = new HashMap<String, FileType>();
+		supportedTypes.put("javac", java);
+		supportedTypes.put("g++", cpp);
+		supportedTypes.put("gcc", cpp);
+		supportedTypes.put("clang", cpp);
+		supportedTypes.put("csc", cs);
+		supportedTypes.put("python", python);
+		supportedTypes.put("python3", python);
+
+		if(fileNames.containsKey(compiler))
+			retun supportedTypes(compiler);
+
+		return invalidFile;
+=======
 	*	@returb the corresponding FileType object
 	*/
 	static FileType assignFile(Set<String> fileNames, List<String> command)
@@ -42,6 +62,7 @@ public class test{
 				}
 
 		return file;
+>>>>>>> fd7715e9dba56ff512315539b60b4e00dadf84be
 	}
 
 	public static void main(String[] args) throws Exception
@@ -58,12 +79,20 @@ public class test{
 		//will contain the File names
 		Set<String> fileNames= new HashSet<String>();
 
+<<<<<<< HEAD
+		/*	Find out what type of file(s) is being compiled by checking the compiler used
+=======
 		/*	Find out what type of file(s) is being compiled,
+>>>>>>> fd7715e9dba56ff512315539b60b4e00dadf84be
 			if it is a supported type we will add it to fileNames
 			Otherwise we leave it empty and print that the file type is not currently
 			supported
 		*/
+<<<<<<< HEAD
+		FileType file = assignFile(fileNames, commands[0]);
+=======
 		FileType file = assignFile(fileNames, commands);
+>>>>>>> fd7715e9dba56ff512315539b60b4e00dadf84be
 
 		if(file == invalidFile)
 			System.out.println("Not supported file type");
@@ -92,25 +121,43 @@ public class test{
 
 		in.close();
 
+<<<<<<< HEAD
+		file.parseOutput(output.toString(), fileNames);
+
+=======
+>>>>>>> fd7715e9dba56ff512315539b60b4e00dadf84be
 		System.exit(0);
+
 	}
 }
 
 abstract class FileType{
 	List<String> errors;
-	List<String> warnings;
 
-	public abstract void addError(String message);
-	public abstract void addWarning(String message);
+	public FileType(){
+		errors = new ArrayList<String>();
+	}
+	
+	//helper function for parseOutput
+	private void addError(String message){
+		errors.add(message);
+	}
+
+	/**
+	*	@param output is the terminal output we will parse
+	*	@param fileNames contains all the filenames
+	*	@effects Will read in the terminal output and accordingly place them into errors
+	*/
+	public abstract void parseOutput(String output, Set<String> fileNames);
 	public abstract void searchErrors();
 }
 
 class CppFile extends FileType{
-	public void addError(String message){
-
+	public CppFile(){
+		super();
 	}
 
-	public void addWarning(String message){
+	public void parseOutput(String output, Set<String> fileNames){
 
 	}
 
@@ -120,12 +167,12 @@ class CppFile extends FileType{
 }
 
 class CFile extends FileType{
-	public void addError(String message){
-		
+	public CFile(){
+		super();
 	}
 
-	public void addWarning(String message){
-
+	public void parseOutput(String output, Set<String> fileNames){
+		
 	}
 
 	public void searchErrors(){
@@ -134,12 +181,12 @@ class CFile extends FileType{
 }
 
 class CsFile extends FileType{
-	public void addError(String message){
-		
+	public CsFile(){
+		super();
 	}
 
-	public void addWarning(String message){
-
+	public void parseOutput(String output, Set<String> fileNames){
+		
 	}
 
 	public void searchErrors(){
@@ -148,12 +195,12 @@ class CsFile extends FileType{
 }
 
 class JavaFile extends FileType{
-	public void addError(String message){
-		
+	public JavaFile(){
+		super();
 	}
 
-	public void addWarning(String message){
-
+	public void parseOutput(String output, Set<String> fileNames){
+		
 	}
 
 	public void searchErrors(){
@@ -162,12 +209,13 @@ class JavaFile extends FileType{
 }
 
 class PythonFile extends FileType{
-	public void addError(String message){
-		
+	public PythonFile(){
+		super();
 	}
 
-	public void addWarning(String message){
-
+<<<<<<< HEAD
+	public void parseOutput(String output, Set<String> fileNames){
+		
 	}
 
 	public void searchErrors(){
@@ -175,13 +223,15 @@ class PythonFile extends FileType{
 	}
 }
 
+=======
+>>>>>>> fd7715e9dba56ff512315539b60b4e00dadf84be
 class InvalidFile extends FileType{
-	public void addError(String message){
-		
+	public InvalidFile(){
+		super();
 	}
 
-	public void addWarning(String message){
-
+	public void parseOutput(String output, Set<String> fileNames){
+		
 	}
 
 	public void searchErrors(){
