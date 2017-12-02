@@ -9,54 +9,39 @@ public class test{
 	static CppFile cpp = new CppFile();
 	static CFile c = new CFile();
 	static CsFile cs = new CsFile();
-	static GoFile go = new GoFile();
 	static PythonFile python = new PythonFile();
 	static InvalidFile invalidFile = new InvalidFile();
-
-	/**
-	*	@param fileType is the type of file we will try to return
-	*	@return the corresponding filetype if it is valid, else an invalidFile 
-	*/
-	static FileType assignFile(String fileType)
-	{
-		Map<String, FileType> types = new HashMap<String, FileType>();
-		types.put(".java", java);
-		types.put(".cpp", cpp);
-		types.put(".c", c);
-		types.put(".cs", cs);
-		types.put(".go", go);
-		types.put(".py", python);
-		types.put("", invalidFile);
-
-		return types.get(fileType);
-	}
 
 	/**
 	*	See if the string argument lets us know the type of file we are compiling
 	*	and assign it in the case that we find it
 	*
-	*	@param fileType will hold the proper fileType
+	*	@param fileNames will hold the file names
 	*	@param command will be the string we check
+	*	@returb the corresponding FileType object
 	*/
-	static boolean containsFileType(String fileType, String command)
+	static FileType assignFile(Set<String> fileNames, List<String> command)
 	{
 		//A mapping of the format <file extension, FileType object>
-		Set<String> supportedTypes = new HashSet<String>();
-		supportedTypes.add(".java");
-		supportedTypes.add(".cpp");
-		supportedTypes.add(".c");
-		supportedTypes.add(".cs");
-		supportedTypes.add(".go");
-		supportedTypes.add(".py");
+		Map<String, FileType> supportedTypes = new HashMap<String, FileType>();
+		supportedTypes.put(".java", java);
+		supportedTypes.put(".cpp", cpp);
+		supportedTypes.put(".h", cpp);
+		supportedTypes.put(".c", c);
+		supportedTypes.put(".cs", cs);
+		supportedTypes.put(".py", python);
 
-		for(String s: supportedTypes)
-			if(command.contains(s))
-			{
-				fileType = s;
-				return true;
-			}
+		FileType file= invalidFile;
 
-		return false;
+		for(String arg: command)
+			for(String type: supportedTypes.keySet())
+				if(arg.contains(type))
+				{
+					fileNames.add(arg);
+					file = supportedTypes.get(type);
+				}
+
+		return file;
 	}
 
 	public static void main(String[] args) throws Exception
@@ -68,30 +53,21 @@ public class test{
 		//parse the line into a List
 		List<String> commands = new ArrayList<String>();
 		for(int i=0; i<tempCommands.length; i++)
-			commands.add(commands.get(i));
+			commands.add(tempCommands[i]);
 
-		//will contain the File type
-		String fileType="";
-		FileType file;
+		//will contain the File names
+		Set<String> fileNames= new HashSet<String>();
 
-		/*	Find out what type of file is being compiled,
-			if it is a supported type we will assign it to the string fileType
+		/*	Find out what type of file(s) is being compiled,
+			if it is a supported type we will add it to fileNames
 			Otherwise we leave it empty and print that the file type is not currently
 			supported
 		*/
-		for(int i=0; i<commands.size(); i++)
-		{
-			if(containsFileType(fileType, commands.get(i)))
-			{
-				file = assignFile(fileType);
-				break;
-			}
+		FileType file = assignFile(fileNames, commands);
 
-			if(i==commands.size()-1)
-			{
-				System.out.println("Not supported file type");
-			}
-		}
+		if(file == invalidFile)
+			System.out.println("Not supported file type");
+
 
 		//compile the program
 		ProcessBuilder ps=new ProcessBuilder(commands);
@@ -115,8 +91,6 @@ public class test{
 		System.out.println("compilation complete!");
 
 		in.close();
-
-		
 
 		System.exit(0);
 	}
@@ -188,20 +162,6 @@ class JavaFile extends FileType{
 }
 
 class PythonFile extends FileType{
-	public void addError(String message){
-		
-	}
-
-	public void addWarning(String message){
-
-	}
-
-	public void searchErrors(){
-		
-	}
-}
-
-class GoFile extends FileType{
 	public void addError(String message){
 		
 	}
