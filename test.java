@@ -73,16 +73,20 @@ public class test{
 		StringBuffer output = new StringBuffer(); //hold the error message
 
 		while ((line = in.readLine()) != null) {
-		    //System.out.println(line);
+		    System.out.println(line);
 		    output.append(line);
 		    output.append("\n");
 		}
 		pr.waitFor();
-		System.out.println("compilation complete!");
+
+		if (output.toString().isEmpty())
+			System.out.println("compilation complete!");
+		else
+			System.out.println("compilation errors!");
 
 		in.close();
 
-		file.parseOutput(output.toString(), fileNames);
+		file.parseOutput(output.toString());
 		file.printErrors();
 
 		System.exit(0);
@@ -102,6 +106,11 @@ abstract class FileType{
 		errors.add(message);
 	}
 
+	//helper function for JavaFile.parseOutput
+	protected void removeLastError(){
+		errors.remove(errors.size()-1);
+	}
+
 	//tester method
 	public void printErrors(){
 		for(String s: errors)
@@ -113,7 +122,7 @@ abstract class FileType{
 	*	@param fileNames contains all the filenames
 	*	@effects Will read in the terminal output and accordingly place them into errors
 	*/
-	public abstract void parseOutput(String output, Set<String> fileNames);
+	public abstract void parseOutput(String output);
 	public abstract void searchErrors();
 }
 
@@ -122,7 +131,11 @@ class CppFile extends FileType{
 		super();
 	}
 
-	public void parseOutput(String output, Set<String> fileNames){
+	/**
+	*
+	*	@param output is what we have left of the terminal output to search through
+	*/
+	public void parseOutput(String output){
 		int substrStart = output.indexOf("error");
 
 		while(substrStart>=0)
@@ -149,8 +162,28 @@ class JavaFile extends FileType{
 		super();
 	}
 
-	public void parseOutput(String output, Set<String> fileNames){
-		
+	/**
+	*
+	*	@param output is what we have left of the terminal output to search through
+	*/
+	public void parseOutput(String output){
+		int substrStart = output.indexOf("error");
+
+		while(substrStart>=0)
+		{
+			int substrEnd = output.substring(substrStart).indexOf("\n") + substrStart;
+
+			if(substrEnd<0)
+				substrEnd = output.length()-1;
+
+			addError(output.substring(substrStart,substrEnd));
+			output = output.substring(substrEnd);
+
+			substrStart = output.indexOf("error");
+		}
+
+		//remove last error statement since it is just an error count
+		removeLastError();
 	}
 
 	public void searchErrors(){
@@ -163,7 +196,7 @@ class PythonFile extends FileType{
 		super();
 	}
 
-	public void parseOutput(String output, Set<String> fileNames){
+	public void parseOutput(String output){
 		
 	}
 
@@ -177,7 +210,7 @@ class InvalidFile extends FileType{
 		super();
 	}
 
-	public void parseOutput(String output, Set<String> fileNames){
+	public void parseOutput(String output){
 		
 	}
 
