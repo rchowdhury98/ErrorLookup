@@ -1,0 +1,2 @@
+Sample text file .. this would be the output from our 
+programs search of error message.
