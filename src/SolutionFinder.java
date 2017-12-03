@@ -20,10 +20,6 @@ public class SolutionFinder{
         //string representation of the link to request
         String url;
     
-        //the key for this application and cx is the custom search engine
-        //created by user
-        String key, cx;
-    
         //Default constructor
         public LinkQuery(){
             httpRequest = "";
@@ -33,18 +29,27 @@ public class SolutionFinder{
         
         //Grab API key from file and add it to the url
         private void appendKeyFromFile(String file){
-            key = "";
-            
-            //INSERT CODE for reading in file
+            String key = "";
+            try{
+                BufferedReader in = new BufferedReader(new FileReader(file));
+                key = in.readLine();
+                
+                in.close();
+            }catch(Exception e){}
     
             url += key;
         }
     
         //Grab custom search engine information from file
         private void appendCSEFromFile(String file){
-            cx = "";
+            String cx = "";
             
-            //INSERT CODE for reading in file
+            try{
+                BufferedReader in = new BufferedReader(new FileReader(file));
+                cx = in.readLine();
+                
+                in.close();
+            }catch(Exception e){}
     
             url += cx; 
         }
@@ -82,21 +87,41 @@ public class SolutionFinder{
     
                 out.close();
     
-            }catch(Exception e){e.printStrackTrace();}
-        
+            }catch(Exception e){e.printStackTrace();}
         }
-    
-    }   
+        
+        //Return the response from the HTTP Request
+        String getResponse(){
+            String response = "";
+            try{
+                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                
+                //Read in entire response
+                while((response += in.readLine()) != null){}
+                
+            }catch(Exception e){e.printStackTrace();}
+        }
+
+
+
+    }
+    //End of LinkQuery class definition
+
+
     //Private variables
 
     //A list of all of the links to various websites
     List<URL> links;
     
+    //Object that wraps a lot of socket information
+    LinkQuery lq;
 
     //Default contructor
     public SolutionFinder(){
         links = new ArrayList<URL>();
+        lq = new LinkQuery();
     }
+
     //Download the URL webpages to display
     //Returns a list of all the webpages in a string format
     String[] getPlainTextPages(){
