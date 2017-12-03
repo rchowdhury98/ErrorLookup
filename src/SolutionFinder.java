@@ -31,7 +31,7 @@ public class SolutionFinder{
                 //Setup the SSL context
                 SSLSocketFactory factory = (SSLSocketFactory) SSLSocketFactory.getDefault();
             
-                socket = (SSLSocket) factory.createSocket("www.google.com", 443);
+                socket = (SSLSocket) factory.createSocket("www.googleapis.com", 443);
                 socket.startHandshake();
             
             }catch(Exception e){e.printStackTrace();}
@@ -44,6 +44,9 @@ public class SolutionFinder{
                 BufferedReader in = new BufferedReader(new FileReader(file));
                 key = in.readLine();
                 
+                //DEBUG
+                System.out.println("Key: " + key);
+
                 in.close();
             }catch(Exception e){}
     
@@ -58,6 +61,9 @@ public class SolutionFinder{
                 BufferedReader in = new BufferedReader(new FileReader(file));
                 cx = in.readLine();
                 
+                //DEBUG
+                System.out.println("CX: " + cx);
+
                 in.close();
             }catch(Exception e){}
     
@@ -82,7 +88,8 @@ public class SolutionFinder{
             //Actual composition of the HTTPRequest header
     
             httpRequest = "GET " + url + " HTTP/1.1\r\n";
-            httpRequest += "Content-Type: application/json\r\n";
+            httpRequest += "Host: www.googleapis.com\r\n";
+            httpRequest += "Content-Type: text/html, application/json\r\n";
             httpRequest += "User-Agent: Mozilla/5.0 (X11; Linux x86_64)\r\n";
             httpRequest += "Connection: close\r\n";
             httpRequest += "\r\n\r\n";
@@ -94,8 +101,6 @@ public class SolutionFinder{
             try{
                 BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
                 
-                //DEBUG
-                System.out.println("HTTP Request: \n" + httpRequest);
 
                 out.write(httpRequest);
                 out.flush();
