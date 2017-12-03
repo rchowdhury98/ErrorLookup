@@ -3,6 +3,7 @@ import java.io.*;
 import java.util.*;
 import java.net.*;
 import javax.net.ssl.*;
+import org.json.*;
 
 //This class implements a webscraper to grab the pages that are related to the error
 //This would use a search engine, most likely Google, to find the links.
@@ -43,9 +44,6 @@ public class SolutionFinder{
             try{
                 BufferedReader in = new BufferedReader(new FileReader(file));
                 key = in.readLine();
-                
-                //DEBUG
-                System.out.println("Key: " + key);
 
                 in.close();
             }catch(Exception e){}
@@ -61,9 +59,6 @@ public class SolutionFinder{
                 BufferedReader in = new BufferedReader(new FileReader(file));
                 cx = in.readLine();
                 
-                //DEBUG
-                System.out.println("CX: " + cx);
-
                 in.close();
             }catch(Exception e){}
     
@@ -117,14 +112,11 @@ public class SolutionFinder{
                 //Read in entire response
                 while((response += in.readLine()) != null){
                     response += "\n";
-                    //DEBUG
-                    System.out.println("Response: " + response);
                 }
                 
-                //DEBUG
-                System.out.println("HTTP Response: \n" + response);
 
             }catch(Exception e){e.printStackTrace();}
+            
             return response;
         }
 
@@ -173,6 +165,9 @@ public class SolutionFinder{
         //Receive and parse the response
         String response = lq.getResponse();
         
+        //Turn String into JSON
+        JSONObject jsonObj = new JSONObject(response);
+    
 
         //Close the connection
         lq.close();
@@ -197,6 +192,7 @@ public class SolutionFinder{
 
     public static void main(String[] args){
         SolutionFinder sf = new SolutionFinder("rust", "key.txt", "cx.txt");
+        
         sf.getLinks();
     }
 
