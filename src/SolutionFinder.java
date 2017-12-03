@@ -116,10 +116,34 @@ public class SolutionFinder{
     //Object that wraps a lot of socket information
     LinkQuery lq;
 
+    //Info for request
+    //The key file
+    //cx name file
+    //and the search element of interest
+    String key, cx, se;
+
     //Default contructor
-    public SolutionFinder(){
+    public SolutionFinder(String se, String key, String cx){
         links = new ArrayList<URL>();
         lq = new LinkQuery();
+        this.key = key;
+        this.cx = cx;
+        this.se = se;
+    }
+
+    //Compose request header
+    //Send request and receive response
+    //parser response to get the individual links
+    public void getLinks(){
+        //Construct and send HTTP Request
+        lq.composeHTTPRequest(se, key, cx);
+        lq.sendRequest();
+        
+        //Receive and parse the response
+        Sting response = lq.getResponse();
+        
+        //DEBUG
+        System.out.println(repose);
     }
 
     //Download the URL webpages to display
