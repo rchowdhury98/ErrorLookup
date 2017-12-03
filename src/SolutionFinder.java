@@ -83,6 +83,8 @@ public class SolutionFinder{
     
             httpRequest = "GET " + url + " HTTP/1.1\r\n";
             httpRequest += "Content-Type: application/json\r\n";
+            httpRequest += "User-Agent: Mozilla/5.0 (X11; Linux x86_64)\r\n";
+            httpRequest += "Connection: close\r\n";
             httpRequest += "\r\n\r\n";
     
         }
@@ -109,6 +111,7 @@ public class SolutionFinder{
                 
                 //Read in entire response
                 while((response += in.readLine()) != null){
+                    response += "\n";
                     //DEBUG
                     System.out.println("Response: " + response);
                 }
@@ -122,7 +125,9 @@ public class SolutionFinder{
 
         //Method to close the socket connection
         void close(){
-            socket.close();
+            try{
+                socket.close();
+            }catch(Exception e){e.printStackTrace();}
         }
 
     }
