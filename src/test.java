@@ -1,3 +1,6 @@
+import java.lang.*;
+import java.io.*;
+import java.util.*;
 
 public class test{
 
@@ -173,14 +176,21 @@ class JavaFile extends FileType{
 			if(substrEnd<0)
 				substrEnd = output.length()-1;
 
-			addError(output.substring(substrStart,substrEnd));
+			String error = output.substring(substrStart,substrEnd);
+
+			//if there is an Exception, show the source
+			if(error.contains("Exception"))
+				error+= output.substring(substrEnd+1, output.substring(substrEnd+1).indexOf("\n"));
+
+			addError(error);
 			output = output.substring(substrEnd);
 
 			substrStart = output.indexOf("error");
 		}
 
 		//remove last error statement since it is just an error count
-		removeLastError();
+		if(errors.size()>1)
+			removeLastError();
 	}
 
 	public void searchErrors(){
@@ -193,8 +203,14 @@ class PythonFile extends FileType{
 		super();
 	}
 
+	//have to watch out for exceptions
 	public void parseOutput(String output){
-		
+		//if it is an exception, just put in the whole message
+		if(output.contains("Exception"))
+			addError(output);
+
+		else
+			addError(output.substring(output.indexOf(">")+1));
 	}
 
 	public void searchErrors(){
