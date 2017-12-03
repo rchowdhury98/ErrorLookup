@@ -140,15 +140,15 @@ public class SolutionFinder{
         lq.sendRequest();
         
         //Receive and parse the response
-        Sting response = lq.getResponse();
+        String response = lq.getResponse();
         
         //DEBUG
-        System.out.println(repose);
+        System.out.println(response);
     }
 
     //Download the URL webpages to display
     //Returns a list of all the webpages in a string format
-    String[] getPlainTextPages(){
+    public String[] getPlainTextPages(){
         
         //Open each link and download the webpages into String
         for(int i = 0; i < links.size(); ++i){
@@ -162,6 +162,12 @@ public class SolutionFinder{
     void savePagesToFile(String file){
         
     }
+
+    public static void main(String[] args){
+        SolutionFinder sf = new SolutionFinder("rust", "key.txt", "cx.txt");
+        sf.getLinks();
+    }
+
 }
 
 
