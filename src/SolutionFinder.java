@@ -2,6 +2,7 @@ import java.lang.*;
 import java.io.*;
 import java.util.*;
 import java.net.*;
+import javax.net.ssl.*;
 
 //This class implements a webscraper to grab the pages that are related to the error
 //This would use a search engine, most likely Google, to find the links.
@@ -12,7 +13,7 @@ public class SolutionFinder{
     public class LinkQuery{
         
         //Socket used to write a search query and then get results
-        Socket socket;
+        SSLSocket socket;
         
         //string representation of the HTTP request
         String httpRequest;
@@ -23,8 +24,17 @@ public class SolutionFinder{
         //Default constructor
         public LinkQuery(){
             httpRequest = "";
-            url = "https://www.googleapis.com/customsearch/v1?key=";
-            socket = new Socket("www.google.com", 80);
+            url = "/customsearch/v1?key=";
+            
+            try{
+            
+                //Setup the SSL context
+                SSLSocketFactory factory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+            
+                socket = (SSLSocket) factory.createSocket("www.google.com", 443);
+                socket.startHandshake();
+            
+            }catch(Exception e){e.printStackTrace();}
         }
         
         //Grab API key from file and add it to the url
@@ -82,11 +92,12 @@ public class SolutionFinder{
             try{
                 BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
                 
+                //DEBUG
+                System.out.println("HTTP Request: \n" + httpRequest);
+
                 out.write(httpRequest);
                 out.flush();
-    
-                out.close();
-    
+
             }catch(Exception e){e.printStackTrace();}
         }
         
@@ -97,12 +108,22 @@ public class SolutionFinder{
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 
                 //Read in entire response
-                while((response += in.readLine()) != null){}
+                while((response += in.readLine()) != null){
+                    //DEBUG
+                    System.out.println("Response: " + response);
+                }
                 
+                //DEBUG
+                System.out.println("HTTP Response: \n" + response);
+
             }catch(Exception e){e.printStackTrace();}
+            return response;
         }
 
-
+        //Method to close the socket connection
+        void close(){
+            socket.close();
+        }
 
     }
     //End of LinkQuery class definition
@@ -142,8 +163,9 @@ public class SolutionFinder{
         //Receive and parse the response
         String response = lq.getResponse();
         
-        //DEBUG
-        System.out.println(response);
+
+        //Close the connection
+        lq.close();
     }
 
     //Download the URL webpages to display
